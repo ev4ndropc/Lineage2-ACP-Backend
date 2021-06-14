@@ -35,5 +35,6 @@ router.post('/game_account/create', Auth, GameAccountController.createAccount)
 
 //Chars
 router.get('/chars/list', Auth, CharsControlle.getList)
+router.post('/chars/transfer', Auth, CharsControlle.transferItems)
 
 module.exports = router
