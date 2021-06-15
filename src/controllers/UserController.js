@@ -132,6 +132,6 @@ module.exports = {
     accounts = accounts.filter((v,i,a)=>a.findIndex(t=>(t.login === v.login))===i)
     chars = chars.filter((v,i,a)=>a.findIndex(t=>(t.char_name === v.char_name))===i)
 
-    return response.status(200).json({ user, chars, accounts })
+    return response.status(200).json({ user, ip: request.ip, chars, accounts })
   }
 }
