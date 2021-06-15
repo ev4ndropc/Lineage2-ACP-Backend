@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const Auth = require('../middlewares/Auth')
-const { promoCodeLimit } = require('../middlewares/rateLimit')
+const { promoCodeLimit, transferItems } = require('../middlewares/rateLimit')
 
 const UserController = require('../controllers/UserController')
 const InventoryController = require('../controllers/InventoryController')
@@ -29,12 +29,12 @@ router.get('/inventory/get_items', InventoryController.list)
 
 //Items
 router.get('/items/get_list', ItemsController.getItemsList)
+router.post('/chars/transfer', Auth, ItemsController.transferItems)
 
 //Account
 router.post('/game_account/create', Auth, GameAccountController.createAccount)
 
 //Chars
 router.get('/chars/list', Auth, CharsControlle.getList)
-router.post('/chars/transfer', Auth, CharsControlle.transferItems)
 
 module.exports = router

@@ -5,4 +5,10 @@ const promoCodeLimit = rateLimit({
   max: 10
 });
 
-module.exports = { promoCodeLimit }
+const transferItems = rateLimit({
+  windowMs: 30 * 60 * 1000, // 20 minutes
+  max: 1,
+  message: { ok: false, message: 'limit of requests' }
+})
+
+module.exports = { promoCodeLimit, transferItems }
