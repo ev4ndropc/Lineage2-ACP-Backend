@@ -19,6 +19,7 @@ router.post('/signin', UserController.sign)
 
 //User
 router.get('/user/info', Auth, UserController.info)
+router.post('/active/account', UserController.activeAccount)
 
 //Promocode
 router.post('/promocode/add', Auth, PromocodeController.create)

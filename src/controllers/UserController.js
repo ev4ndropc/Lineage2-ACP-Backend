@@ -25,6 +25,10 @@ module.exports = {
     if( !email || !password )
     return response.status(404).json({ ok: false, message: 'Please fill in all fields and try again.' })
 
+    if( email.trim() == '' || password.trim() == '' )
+    return response.status(404).json({ ok: false, message: 'Please fill in all fields and try again.' })
+
+
     const user = await User.findOne({ email });
 
     if(user)
@@ -38,6 +42,7 @@ module.exports = {
       password: hash,
       is_admin: false,
       banned: false,
+      is_active: false,
       balance: 0,
       recruit_friend_id: genRandomString(2)+genRandomNumber(5),
       created_at: moment().format(),
@@ -67,6 +72,10 @@ module.exports = {
     if(!email, !password)
     return response.status(404).json({ ok: false, message: 'Sent all require data. (email, password)' })
 
+    if( email.trim() == '' || password.trim() == '' )
+    return response.status(404).json({ ok: false, message: 'Please fill in all fields and try again.' })
+
+
     const user = await User.findOne({ email })
 
     if(!user)
@@ -80,13 +89,51 @@ module.exports = {
     if(!correct)
     return response.status(404).json({ ok: false, message: 'There is no user registered with this username or password.' })
 
-    return response.status(200).json({ 
-      ok: true, 
-      name: user.name, 
-      message: 'Username successfully, wait while we redirect you!', 
-      session_token: generateToken({ _id: user._id, email: user.email }) })
+
+    if(user.is_active) {
+      return response.status(200).json({ 
+        ok: true, 
+        name: user.name, 
+        message: 'Username successfully, wait while we redirect you!', 
+        session_token: generateToken({ _id: user._id, email: user.email }) 
+      })
+    }else{
+      return response.status(200).json({ ok: true, need_to_activate: true, name: user.name, number: user.number })
+    }
+
 
   },
+
+  async activeAccount(request, response) {
+    const { active_code, email } = request.body
+
+    if(!active_code, !email)
+    return response.status(404).json({ ok: false, message: 'Please fill in all fields and try again.' })
+
+    if( active_code.trim() == '' || email.trim() == '' )
+    return response.status(404).json({ ok: false, message: 'Please fill in all fields and try again.' })
+
+
+    const user = await User.findOne({ email })
+
+    if(!user)
+    return response.status(404).json({ ok: false, message: 'Please fill in all fields and try again.' })
+
+
+    if(active_code == user.active_code) {
+      await User.updateOne({email}, { is_active: true }, (r) => console.log(r))
+
+      return response.status(200).json({ 
+        ok: true, 
+        name: user.name,  
+        message: 'Account successfully activated!',
+        session_token: generateToken({ _id: user._id, email: user.email }) 
+      })
+    }else{
+      return response.status(400).json({ ok: false, message: 'Invalid activation code, try again!'}) 
+    }
+  },
+
   async forgot(request, response) {
     
   },
