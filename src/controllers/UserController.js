@@ -90,16 +90,12 @@ module.exports = {
     return response.status(404).json({ ok: false, message: 'There is no user registered with this username or password.' })
 
 
-    if(user.is_active) {
-      return response.status(200).json({ 
-        ok: true, 
-        name: user.name, 
-        message: 'Username successfully, wait while we redirect you!', 
-        session_token: generateToken({ _id: user._id, email: user.email }) 
-      })
-    }else{
-      return response.status(200).json({ ok: true, need_to_activate: true, name: user.name, number: user.number })
-    }
+    return response.status(200).json({ 
+      ok: true, 
+      name: user.name, 
+      message: 'Username successfully, wait while we redirect you!', 
+      session_token: generateToken({ _id: user._id, email: user.email }) 
+    })
 
 
   },
